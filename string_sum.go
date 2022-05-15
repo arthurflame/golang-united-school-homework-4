@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"strings"
+	"unicode"
 )
 
 //use these errors as appropriate, wrapping them with fmt.Errorf function
@@ -33,56 +34,61 @@ func StringSum(input string) (output string, err error) {
 		return input, fmt.Errorf("%w", errorEmptyInput)
 	}
 
-	//var operands []string
+	output, err = cleanInput(input)
+	if err != nil {
+		return "", fmt.Errorf("%w", err)
+	}
+	fmt.Println("cleaned output:", output)
 
-	output = strings.Join(strings.Split(strings.TrimSpace(input), " "), "")
-	//fmt.Println(output)
-	getOperands(output)
+	z := getNumbers(output)
+	fmt.Println(z)
+
+	//getOperands()
 
 	return "", nil
 }
 
-// input := "-2+5"
-// -,+,-
-// 2,3,4
-// isFirstOpend bool  input[0] == "-"
-//result:=
+func cleanInput(input string) (string, error) {
+	var result string
 
-func getOperands(input string) []int {
-	var operators = make([]string, len(input))
-	var operands = make([]string, len(input))
+	for i := range input {
+		// -2+3
+		if string(input[i]) == "+" || string(input[i]) == "-" || unicode.IsDigit(rune(input[i])) {
+			result += string(input[i])
+		} else {
+			return "", fmt.Errorf("char: %q, can't be parsed", string(input[i]))
 
-	if string(input[0]) == "-" {
-		operators[0] = "-"
-		for i := 1; i < len(input); i++ {
-			if string(input[i]) == "-" || string(input[i]) == "+" {
-				operators[i] = string(input[i])
-			}
-		}
-	} else {
-		for i := 0; i < len(input); i++ {
-			if string(input[i]) == "-" || string(input[i]) == "+" {
-				operators[i] = string(input[i])
-			}
 		}
 	}
+	result = strings.Join(strings.Split(strings.TrimSpace(input), " "), "")
+	return result, nil
 
-	if strings.HasPrefix(input, "-") {
-		for i := 1; i < len(input); i++ {
-			if string(input[i]) != "-" && string(input[i]) != "+" {
-				operands[i] = string(input[i])
-			}
+}
+
+func getNumbers(input string) []int {
+	result := make([]string, 0)
+	var temp string
+
+	//if strings.HasPrefix(input, "-") {
+	//	i = 1
+	//}
+
+	for i := range input {
+		if strings.Count(input, "-") < 2 && string(input[i]) != "+" {
+			temp += string(input[i])
+		} else {
+			result = append(result, temp)
 		}
-	} else {
-		for i := 0; i < len(input); i++ {
-			if string(input[i]) != "-" && string(input[i]) != "+" {
-				operands[i] = string(input[i])
-			}
+		if string(input[i]) == "+" && strings.Count(strings.Join(result, ""), "-") > 1 {
+			temp += string(input[i])
 		}
+		result = append(result, temp)
 	}
 
-	fmt.Println("operators:", operators)
-	fmt.Println("operands:", operands)
-	
+	fmt.Println(result)
 	return []int{0}
 }
+
+//func getOperands(input string) []int {
+//	return []int{0}
+//}
