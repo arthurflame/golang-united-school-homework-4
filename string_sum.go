@@ -40,8 +40,7 @@ func StringSum(input string) (output string, err error) {
 	}
 	fmt.Println("cleaned output:", output)
 
-	z := getNumbers(output)
-	fmt.Println("got numbers:", z)
+	_ = getNumbers(output)
 
 	//convertNumbers()
 
@@ -52,7 +51,7 @@ func cleanInput(input string) (string, error) {
 	var result string
 
 	for i := range input {
-		// -2+3
+
 		if string(input[i]) == "+" || string(input[i]) == "-" || unicode.IsDigit(rune(input[i])) {
 			result += string(input[i])
 		} else {
@@ -72,28 +71,21 @@ func splitAny(s string, sep string) []string {
 	return strings.FieldsFunc(s, splitter)
 }
 
-func getNumbers(input string) []int {
+func getNumbers(input string) []string {
 	result := make([]string, 0)
-	operands := splitAny(input, "+-")
-
-	// 20+30
 	var tmp string
-	var counter int
-	for i := range input {
-		switch string(input[i]) {
-		case "-":
-			tmp = "-" + operands[counter]
-			result = append(result, tmp)
-			tmp = ""
-			counter++
-		case "+":
-			//tmp += operands[counter]
-			result = append(result, operands[counter])
-			counter++
-		}
 
+	for i := range input {
+		if string(input[i]) == "+" || string(input[i]) == "-" {
+			tmp += "." + string(input[i])
+			fmt.Println("if", tmp)
+		} else {
+			tmp += string(input[i])
+			fmt.Println("else:", tmp)
+		}
 	}
-	fmt.Println("operands:", operands)
-	fmt.Println("result:", result)
-	return []int{0}
+
+	result = splitAny(tmp, ".+")
+
+	return result
 }
