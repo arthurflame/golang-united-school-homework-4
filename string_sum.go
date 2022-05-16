@@ -76,12 +76,10 @@ func getNumbers(input string) []string {
 	var tmp string
 
 	for i := range input {
-		if string(input[i]) == "+" || string(input[i]) == "-" {
+		if string(input[i]) == "-" {
 			tmp += "." + string(input[i])
-			fmt.Println("if", tmp)
 		} else {
 			tmp += string(input[i])
-			fmt.Println("else:", tmp)
 		}
 	}
 
