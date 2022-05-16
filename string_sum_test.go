@@ -4,7 +4,7 @@ import "testing"
 
 func TestStringSum(t *testing.T) {
 	//input := "\t\t\t   -20 -22       \t\t\t\t"
-	input := "1+2"
+	input := "-20+30"
 
 	got, err := StringSum(input)
 	want := "3"

@@ -41,9 +41,9 @@ func StringSum(input string) (output string, err error) {
 	fmt.Println("cleaned output:", output)
 
 	z := getNumbers(output)
-	fmt.Println(z)
+	fmt.Println("got numbers:", z)
 
-	//getOperands()
+	//convertNumbers()
 
 	return "", nil
 }
@@ -65,30 +65,35 @@ func cleanInput(input string) (string, error) {
 
 }
 
-func getNumbers(input string) []int {
-	result := make([]string, 0)
-	var temp string
-
-	//if strings.HasPrefix(input, "-") {
-	//	i = 1
-	//}
-
-	for i := range input {
-		if strings.Count(input, "-") < 2 && string(input[i]) != "+" {
-			temp += string(input[i])
-		} else {
-			result = append(result, temp)
-		}
-		if string(input[i]) == "+" && strings.Count(strings.Join(result, ""), "-") > 1 {
-			temp += string(input[i])
-		}
-		result = append(result, temp)
+func splitAny(s string, sep string) []string {
+	splitter := func(r rune) bool {
+		return strings.ContainsRune(sep, r)
 	}
-
-	fmt.Println(result)
-	return []int{0}
+	return strings.FieldsFunc(s, splitter)
 }
 
-//func getOperands(input string) []int {
-//	return []int{0}
-//}
+func getNumbers(input string) []int {
+	result := make([]string, 0)
+	operands := splitAny(input, "+-")
+
+	// 20+30
+	var tmp string
+	var counter int
+	for i := range input {
+		switch string(input[i]) {
+		case "-":
+			tmp = "-" + operands[counter]
+			result = append(result, tmp)
+			tmp = ""
+			counter++
+		case "+":
+			//tmp += operands[counter]
+			result = append(result, operands[counter])
+			counter++
+		}
+
+	}
+	fmt.Println("operands:", operands)
+	fmt.Println("result:", result)
+	return []int{0}
+}
