@@ -3,6 +3,7 @@ package string_sum
 import (
 	"errors"
 	"fmt"
+	"strconv"
 	"strings"
 	"unicode"
 )
@@ -38,13 +39,17 @@ func StringSum(input string) (output string, err error) {
 	if err != nil {
 		return "", fmt.Errorf("%w", err)
 	}
-	fmt.Println("cleaned output:", output)
 
-	_ = getNumbers(output)
+	numbers, err := getNumbers(output)
+	if err != nil {
+		return "", fmt.Errorf("%w", err)
+	}
 
-	//convertNumbers()
+	converted := convertNumbers(numbers)
 
-	return "", nil
+	output = strconv.Itoa(converted)
+
+	return output, nil
 }
 
 func cleanInput(input string) (string, error) {
@@ -71,7 +76,7 @@ func splitAny(s string, sep string) []string {
 	return strings.FieldsFunc(s, splitter)
 }
 
-func getNumbers(input string) []string {
+func getNumbers(input string) ([]string, error) {
 	result := make([]string, 0)
 	var tmp string
 
@@ -85,5 +90,20 @@ func getNumbers(input string) []string {
 
 	result = splitAny(tmp, ".+")
 
-	return result
+	if len(result) > 2 || len(result) <= 1 {
+		return result, fmt.Errorf("%w", errorNotTwoOperands)
+	}
+
+	return result, nil
+}
+
+func convertNumbers(input []string) int {
+	var res int
+	for i := range input {
+		if s, err := strconv.Atoi(input[i]); err == nil {
+			res += s
+		}
+	}
+
+	return res
 }
